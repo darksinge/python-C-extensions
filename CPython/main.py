@@ -2,7 +2,7 @@ import hello
 
 
 def main():
-    result = hello.hello('Mr. Python')
+    result = hello.hello('Mr. Anderson')
     print(result)
 
 

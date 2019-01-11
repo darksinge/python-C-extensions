@@ -1,11 +1,11 @@
 
-#include <python3.7/Python.h>
+#include <python3.6/Python.h>
 #include <string>
 #include <iostream>
 
 std::string hello(char * name)
 {
-    std::string result = "hello, " + std::string(name);
+    std::string result = "Hello, " + std::string(name) + ".";
     return result;
 }
 

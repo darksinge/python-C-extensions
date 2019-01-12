@@ -2,3 +2,6 @@ __pycache__/
 .idea/
 build/
 cmake-build-debug/
+*.c
+*.cpp
+*.so

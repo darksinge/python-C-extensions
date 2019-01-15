@@ -1,4 +1,3 @@
-import sys
 import numpy as np
 import random
 import timeit
@@ -38,9 +37,7 @@ def test_bubble_sort_optimized(array_size):
     values = np.array([int(array_size * random.random()) for _ in range(array_size)], dtype=np.int32)
     bubble_sort_opt.sort(values)
 
-
-if __name__ == '__main__':
-
+def main():
     EXECUTIONS = 10
     REPEAT = 10
 
@@ -89,3 +86,6 @@ if __name__ == '__main__':
     plt.xlim()
 
     plt.show()
+
+if __name__ == '__main__':
+    main()

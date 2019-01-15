@@ -2,41 +2,90 @@ import sys
 import numpy as np
 import random
 import timeit
+import matplotlib.pyplot as plt
 
 import bubble_sort_opt
 import bubble_sort
 
-#
-# # seed random to get the same random array each time the program is executed
-# random.seed(1)
 
-SIZE = 1000
-LOOPS = 1000
+py_proto = """
+import random
+from __main__ import test_bubble_sort
+
+# seed `random` to get same random numbers for each version of the sorting algo
+# random.seed({seed})
+
+test_bubble_sort({size})
+"""
+
+c_proto = """
+import random
+from __main__ import test_bubble_sort_optimized
+
+# seed `random` to get same random numbers for each version of the sorting algo
+# random.seed({seed})
+
+test_bubble_sort_optimized({size})
+"""
 
 
-def test_bubble_sort():
-    values = np.array([int(SIZE * random.random()) for _ in range(SIZE)], dtype=np.int32)
+def test_bubble_sort(array_size):
+    values = np.array([int(array_size * random.random()) for _ in range(array_size)], dtype=np.int32)
     bubble_sort.sort(values)
 
 
-def test_bubble_sort_optimized():
-    values = np.array([int(SIZE * random.random()) for _ in range(SIZE)], dtype=np.int32)
+def test_bubble_sort_optimized(array_size):
+    values = np.array([int(array_size * random.random()) for _ in range(array_size)], dtype=np.int32)
     bubble_sort_opt.sort(values)
 
 
 if __name__ == '__main__':
 
-    # lenvalues = 100
-    # values = np.array([int(lenvalues * random.random()) for _ in range(lenvalues)], dtype=np.int)
+    EXECUTIONS = 10
+    REPEAT = 10
 
-    print("Starting bubble sort speed test.\n\tLoops: %d\n\tArray size: %d\n" % (LOOPS, SIZE))
+    MAX_ARR_SIZE = 2500
 
-    ctimer = timeit.timeit(test_bubble_sort_optimized, number=LOOPS)
-    pytimer = timeit.timeit(test_bubble_sort, number=LOOPS)
+    array_sizes = [i for i in range(100, MAX_ARR_SIZE + 1, 100)]
+    results = []
 
-    print("Python code took {0:0.2f} seconds to execute {1} times.".format(pytimer, LOOPS))
-    print("Cython code took {0:0.2f} seconds to execute {1} times.".format(ctimer, LOOPS))
+    print("Starting speed test.\n")
 
-    print("Cython was {:.2f} times faster than Python!".format(pytimer / ctimer))
+    for i, size in enumerate(array_sizes):
 
+        # get the formatted strings to use for `timeit`
+        #
+        # Cython implementation of bubble sort
+        c_stmt = c_proto.format(seed=size, size=size)
+        # Python implementation of bubble sort
+        py_stmt = py_proto.format(seed=size, size=size)
 
+        # use `timeit` to time how long it takes to sort an array of size `size`
+        ctimer = timeit.repeat(stmt=c_stmt, repeat=REPEAT, number=EXECUTIONS)
+        pytimer = timeit.repeat(stmt=py_stmt, repeat=REPEAT, number=EXECUTIONS)
+
+        # calculate the average time it took to sort an array of random numbers
+        ctime = sum(ctimer) / REPEAT
+        pytime = sum(pytimer) / REPEAT
+
+        # calculate the ratio of Python execution and Cython execution speed
+        t_diff = pytime / ctime
+
+        print("Python took {0:0.3f} seconds to sort {1} elements {2} times.".format(pytime, size, EXECUTIONS))
+        print("Cython took {0:0.3f} seconds to sort {1} elements {2} times.".format(ctime, size, EXECUTIONS))
+        print("Cython was {:.3f} times faster than Python!".format(t_diff))
+        print("==================================================")
+
+        results.append((ctime, pytime, t_diff))
+
+    # get percent increase of cython vs python runtimes
+    t_diffs = [result[2] for result in results]
+
+    plt.title('Plot of speed difference between Python\nand Cython code of a bubble sort.')
+    plt.xlim(100, MAX_ARR_SIZE)
+    plt.ylabel('% Speed Increase\nof Cython code')
+    plt.xlabel('Array Size')
+    plt.grid(True)
+    plt.xlim()
+
+    plt.show()

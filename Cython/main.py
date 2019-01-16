@@ -12,7 +12,7 @@ import random
 from __main__ import test_bubble_sort
 
 # seed `random` to get same random numbers for each version of the sorting algo
-# random.seed({seed})
+random.seed({seed})
 
 test_bubble_sort({size})
 """
@@ -22,7 +22,7 @@ import random
 from __main__ import test_bubble_sort_optimized
 
 # seed `random` to get same random numbers for each version of the sorting algo
-# random.seed({seed})
+random.seed({seed})
 
 test_bubble_sort_optimized({size})
 """
@@ -37,9 +37,10 @@ def test_bubble_sort_optimized(array_size):
     values = np.array([int(array_size * random.random()) for _ in range(array_size)], dtype=np.int32)
     bubble_sort_opt.sort(values)
 
+
 def main():
-    EXECUTIONS = 10
-    REPEAT = 10
+    EXECUTIONS = 1
+    REPEAT = 1
 
     MAX_ARR_SIZE = 2500
 
@@ -77,15 +78,20 @@ def main():
 
     # get percent increase of cython vs python runtimes
     t_diffs = [result[2] for result in results]
+    plt.plot(array_sizes, t_diffs, 'r')
 
     plt.title('Plot of speed difference between Python\nand Cython code of a bubble sort.')
+
     plt.xlim(100, MAX_ARR_SIZE)
+    plt.ylim(0)
+
     plt.ylabel('% Speed Increase\nof Cython code')
     plt.xlabel('Array Size')
+
     plt.grid(True)
-    plt.xlim()
 
     plt.show()
+
 
 if __name__ == '__main__':
     main()

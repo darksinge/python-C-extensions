@@ -39,15 +39,16 @@ def test_bubble_sort_optimized(array_size):
 
 
 def main():
-    EXECUTIONS = 1
-    REPEAT = 1
-
+    EXECUTIONS = 10
+    REPEAT = 10
     MAX_ARR_SIZE = 2500
 
     array_sizes = [i for i in range(100, MAX_ARR_SIZE + 1, 100)]
     results = []
 
     print("Starting speed test.\n")
+
+    print("Python time | Cython time | array size | speed increase")
 
     for i, size in enumerate(array_sizes):
 
@@ -63,14 +64,15 @@ def main():
         pytimer = timeit.repeat(stmt=py_stmt, repeat=REPEAT, number=EXECUTIONS)
 
         # calculate the average time it took to sort an array of random numbers
-        ctime = sum(ctimer) / REPEAT
-        pytime = sum(pytimer) / REPEAT
+        ctime = sum(ctimer) / (REPEAT + EXECUTIONS)
+        pytime = sum(pytimer) / (REPEAT + EXECUTIONS)
 
         # calculate the ratio of Python execution and Cython execution speed
         t_diff = pytime / ctime
 
+        # print("{:0.3f} & {:0.6f} & {} & {:0.3f} \\\\".format(pytime, ctime, size, t_diff))
         print("Python took {0:0.3f} seconds to sort {1} elements {2} times.".format(pytime, size, EXECUTIONS))
-        print("Cython took {0:0.3f} seconds to sort {1} elements {2} times.".format(ctime, size, EXECUTIONS))
+        print("Cython took {0:0.6f} seconds to sort {1} elements {2} times.".format(ctime, size, EXECUTIONS))
         print("Cython was {:.3f} times faster than Python!".format(t_diff))
         print("==================================================")
 

@@ -13,7 +13,6 @@ def sort(int[:] a):
 
     for i in range(arrlen):
         for j in range(arrlen):
-
             if a[i] < a[j]:
                 temp = a[j]
                 a[j] = a[i]
